@@ -1,0 +1,9 @@
+use :
+    ./install-prerequisites.bash
+to install compiler, libs and the rest of the building tools
+
+use:
+    ./build.bash
+to download, patch, compile and build the latest centos x86_64 kernel, packages will be found in /home/kbuild/rpmbuild/RPMS/x86_64/
+
+

@@ -1,5 +1,15 @@
 #!/bin/bash
 
+CK=`uname -r |sed 's/.rs//'|sed  's/.el7.x86_64//'`
+echo $#
+if [ $# -eq 1 ]
+then
+    KBV=$1
+else
+    KBV=$CK
+fi
+
+
 function download {
 echo "Looking to download $KF"
 
@@ -35,14 +45,12 @@ echo "OS Build $cver"
 
 
 #delete all the previous build data files
+echo "Removing old build directory"
 userdel -r $BUSER >/dev/null 2>&1
 useradd ${BUSER}
 
 #current running kernel
-CK=`uname -r |sed  's/.el7.x86_64//'`
 
-
-KBV=$CK
 echo "Trying to build for kernel $KBV"
 KF="kernel-$KBV.el7.src.rpm"
 
@@ -61,6 +69,11 @@ else
     download
 fi
 
+if [ ! -f /home/${BUSER}/$KF ]
+then
+    echo "Couldn't download rpm"
+    exit
+fi
 chown ${BUSER}:${BUSER} /home/${BUSER}/$KF
 sudo -u ${BUSER} rpm -i /home/${BUSER}/$KF
 cat toa-patch-linux-3.10.0-327.28.3.el7.patch | sed "s/3.10.0-327.28.3/${KBV}/g"  > /home/${BUSER}/rpmbuild/SOURCES/toa-patch-linux-$KBV.el7.patch

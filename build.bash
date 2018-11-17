@@ -23,10 +23,11 @@ do
         if ( curl -v $u  2>/dev/null|grep $KF -o >/dev/null)
         then
     	    echo "Found, downloading ..."
-    	    wget http://vault.centos.org/$word/$src/Source/SPackages/$KF -O /home/$BUSER/$KF
-    	    if ( rpm -K /home/$BUSER/$KF >/dev/null 2>/dev/null  )
+    	    wget http://vault.centos.org/$word/$src/Source/SPackages/$KF -O $KF
+    	    if ( rpm -K $KF >/dev/null 2>/dev/null  )
     	    then 
     		echo /home/$BUSER/$KF signature ok
+    		cp $KF /home/$BUSER/$KF
     		break 2
     	    else 
     		echo You have a bad rpm, retry downloading, or manually download the file and put it in the current directory
@@ -47,6 +48,7 @@ echo "OS Build $cver"
 #delete all the previous build data files
 echo "Removing old build directory"
 userdel -r $BUSER >/dev/null 2>&1
+groupdel $BUSER >/dev/null 2>&1
 useradd ${BUSER}
 
 #current running kernel
